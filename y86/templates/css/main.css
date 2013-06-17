@@ -1,0 +1,68 @@
+
+
+table thead th{
+	background-color: rgb(45,85,145);
+}
+table{
+	border: 1px solid red;
+}
+a:hover{
+	text-decoration: none;
+}
+input[type='text']{ 
+	border: 1px solid silver;
+	background-color: #eee;
+    height: 16px;
+}
+
+
+
+.nav li a:hover{
+	background-color: silver;
+}
+.middle{
+    max-width: 150px;
+    min-width: 50px;
+    text-align: center;
+    vertical-align: center;
+    display: inline-block;
+}
+.toolbar{
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+}
+.table th,.table td{
+    padding: 5px 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+.table td a:hover{
+    color: red;
+    text-decoration: underline;
+}
+header h1 a{
+    font-size: 50px;
+}
+header h1 a:hover{
+    font-size: 70px;
+    -webkit-tranzform:scale(1.1);
+}
+label{
+    display: inline;
+}
+a.myuser{
+    
+    font-style: italic;
+
+}
+th a{
+    color: white;
+}
+th a:hover{
+    color: white;
+    text-decoration: underline;
+}
+th:hover{
+    background-color: skyblue;
+}

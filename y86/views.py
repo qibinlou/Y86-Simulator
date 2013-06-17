@@ -5,7 +5,7 @@ from django.db.models import Q
 import json
 
 def home(request):
-    source_code = SourceCode.objects.all()
+    # source_code = SourceCode.objects.all()
     return render_to_response('index.html', locals())
     # return HttpResponse("hello")
     
