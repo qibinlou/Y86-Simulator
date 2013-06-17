@@ -1,0 +1,62 @@
+global list Text=[]
+global list LineNum=[]
+global halt=False
+global end=False
+global ret=False
+global F_icode=""
+global pc="0x00000000"
+global D_index=""
+global D_icode="0"
+global D_ifunc=""
+global rA=""
+global rB=""
+global D_valC=""
+global D_valP=""
+global E_index=""
+global E_icode="0"
+global E_ifunc=""
+global E_valC=""
+global E_valA=""
+global E_valB=""
+global E_dstE=""
+global E_dstM=""
+global M_index=""
+global M_icode="0"
+global bch=""
+global M_valE=""
+global M_valM=""
+global M_dstE=""
+global M_dstM=""
+global W_index=""
+global W_icode="0"
+global W_valE=""
+global W_valM=""
+global W_dstE=""
+global W_dstM=""
+global ZF=False
+global SF=False
+global OF=False
+global CF=False
+
+def	GetIndex(temp):
+	l=0
+	r=len(LineNum)-1
+	mid=(l+r)/2
+	while (LineNum[mid]!=temp):
+		if(LineNum[mid]<temp):
+			l=mid+1
+		else:
+			r=mid
+		mid=(l+r)/2;
+	
+	while True:
+		if(mid+1==len(LineNum)):
+			break
+		if(LineNum[mid+1]==LineNum[mid]):
+			mid+=1
+		else:
+			break
+
+	return mid
+
+

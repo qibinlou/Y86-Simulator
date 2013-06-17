@@ -1,0 +1,14 @@
+import data
+
+yo=file("input.yo")
+
+while True:
+	line=yo.readline()
+	if	line=="":
+		break
+	p1=line.index(":")
+	p2=line.index("|")
+	data.linenum.append(line[0:p1-1])
+	data.text.append(line[p1+1,p2-1])
+	
+
