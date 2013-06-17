@@ -76,7 +76,7 @@ def execute():
 		global clocknum
 		clocknum+=1
 		print("CLOCK_NO:%d" %(clocknum))
-		PipeClock.PipeClock();
+		PipeClock.PipeClock()
 		ret_pc=""
 		jmp_pc=""
 		call_pc=""
