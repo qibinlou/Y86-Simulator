@@ -6,7 +6,7 @@ from views import *
 
 urlpatterns = patterns('',
     url(r'^$', home),
-    url(r'^phase$', phase),
+    url(r'^phase$', phase)
     # Examples:
     # url(r'^$', 'y86.views.home', name='home'),
     # url(r'^y86/', include('y86.foo.urls')),

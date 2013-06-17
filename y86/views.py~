@@ -10,6 +10,7 @@ def home(request):
     
     
 def phase(request):
+
     if 'source_id' in request.GET and request.GET['source_id']:
         try:
             source = SourceCode.objects.get(id=request.GET['source_id'])
