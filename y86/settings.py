@@ -1,5 +1,6 @@
 # Django settings for y86 project.
-
+import sys
+import os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
