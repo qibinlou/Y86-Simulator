@@ -24,5 +24,5 @@ def readin():
         data.MemoryCopy(data.LineNum[i],data.Text[i])
         i+=1
 
-readin()
+
 

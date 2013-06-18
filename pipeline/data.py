@@ -12,7 +12,7 @@ global stall
 stall=False
 
 global total_cycle
-total_cycle=1
+total_cycle=0
 
 global valid_cycle
 valid_cycle=0
