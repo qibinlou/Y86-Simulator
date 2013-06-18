@@ -11,6 +11,7 @@ from pipeline.Y86API import *
 
 def home(request):
     # source_code = SourceCode.objects.all()
+    
     return render_to_response('index.html', locals())
     # return HttpResponse("hello")
 
@@ -68,11 +69,14 @@ def phase(request):
         p = Phase.objects.filter(source_code=source).get(cycle=temp_max_cycle)
         # print p
         register, memory = json.loads(p.register), json.loads(p.memory)
+        
+
 
         
         # for current_cycle in range(temp_max_cycle+1, cycle+1):
         #             register,memory = executeY86(register, memory)
-        while register['total_cycle'] != cycle:
+        while (register['total_cycle'] != cycle) and (register['end'] != True):
+            print register,memory
             register,memory = executeY86(register, memory)
         source.max_cycle = cycle
         source.save()
@@ -82,6 +86,7 @@ def phase(request):
         phase.register,phase.memory = json.dumps(register), json.dumps(memory)
         phase.cycle = register['total_cycle']
         phase.save()
+        print register
         result = {"source_id": source.id, "reg":register,"memo":memory}
         return HttpResponse(json.dumps(result))
 
