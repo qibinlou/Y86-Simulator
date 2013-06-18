@@ -16,4 +16,5 @@ val,memory=Y86API.executeY86(0,0,word)
 
 while val["end"]==False:
     val,memory=Y86API.executeY86(val,memory)
-
+    # print "fuck",val
+    print memory

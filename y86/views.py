@@ -2,12 +2,24 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect ,HttpResponse
 from database.models import *
 from django.db.models import Q
+from form import UploadFileForm
 import json
 
 def home(request):
     # source_code = SourceCode.objects.all()
     return render_to_response('index.html', locals())
     # return HttpResponse("hello")
+
+def upload(request):
+
+    for item in request.FILES.getlist('files'):
+        content = json.dumps( item.readlines() )
+        p = SourceCode(name=item.name,code=content)
+        p.save()
+    return HttpResponse(200)
+   
+
+    return HttpResponse("hello")
     
 def phase(request):
     if 'source_id' in request.GET and request.GET['source_id']:
