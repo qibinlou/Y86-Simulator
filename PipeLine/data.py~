@@ -732,9 +732,9 @@ def show():
     print ("W_dstE=%s" %(read("W_dstE")))
     print ("W_dstM=%s" %(read("W_dstM")))
     print("------------------------ALL---------------------------")
-    
-    print("[total_cycle]=%d" %(intread("total_cycle")))
-    print("[valid_cycle]=%d" %(intread("valid_cycle")))
+	
+	print("[total_cycle]=%d" %(intread("total_cycle")))
+	print("[valid_cycle]=%d" %(intread("valid_cycle")))
 
     print ("[0]eax=%s" %(RegRead("0")))
     print ("[1]ecx=%s" %(RegRead("1")))

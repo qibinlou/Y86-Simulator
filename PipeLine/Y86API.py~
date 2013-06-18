@@ -56,8 +56,8 @@ def setY86(register,memory):
     data.RegWrite("6",register["esi"])
     data.RegWrite("7",register["edi"])
 
-    data.intwrite("total_cycle",register["total_cycle"])
-    data.intwrite("valid_cycle",register["valid_cycle"])    
+	data.intwrite("total_cycle",register["total_cycle"])
+	data.intwrite("valid_cycle",register["valid_cycle"])	
 
     data.Memory=memory
 
@@ -120,8 +120,8 @@ def getY86():
     register["esi"]=data.RegRead("6")
     register["edi"]=data.RegRead("7")
     
-    register["total_cycle"]=data.intread("total_cycle")
-    register["valid_cycle"]=data.intread("valid_cycle")
+	register["total_cycle"]=data.intread("total_cycle")
+	register["valid_cycle"]=data.intread("valid_cycle")
 
     memory=data.Memory
     return register,memory    
