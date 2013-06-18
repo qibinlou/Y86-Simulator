@@ -5,11 +5,16 @@ body{
     background-color: #eee;
 }
 
+
+::selection { background-color:#f04530;color:#fff;}
+::-moz-selection { background-color:#f04530;color:#fff;}
+::-webkit-selection { background-color:#f04530;color:#fff;}
+
 #info{
     margin: 1% auto;
 }
 
-table{
+/*table{
     border: 2px solid silver;
 }
 
@@ -17,4 +22,4 @@ td{
     border: 2px solid silver;
     padding: 5px 15px;
 
-}
+}*/
