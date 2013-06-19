@@ -51,8 +51,8 @@
     </div>
 
 
-    <div id="registers">
-        <table>
+    <div id="registers" class="span3">
+        <table class="table table-bordered table-hover">
             <tr>
                 <td>%eax</td>
                 <td id="eax">&nbsp;</td>
@@ -88,8 +88,8 @@
         </table>
     </div>
 
-     <div id="condcode">
-        <table>
+     <div id="condcode" class="span2">
+        <table class="table table-bordered table-hover">
             <tr>
                 <td>CF</td>
                 <td id="cf">&nbsp;</td>
@@ -111,12 +111,12 @@
 
 
     <div id="info">
-        <table>
+        <table class="table table-bordered table-hover">
             <thead>
             </thead>
             <tbody>
-                <tr>
-                    <th rowspan="2">F</th>
+                <tr class="success">
+                    <th rowspan="2" >F</th>
                     <td>pc</td>
                     <td></td>
                     <td></td>
@@ -142,7 +142,7 @@
                 </tr>
 
 
-                <tr>
+                <tr class="danger">
                     <th rowspan="2">D</th>
                     <td>D_icode</td>
                     <td>D_ifunc</td>
@@ -168,7 +168,7 @@
                
                 </tr>
 
-                <tr>
+                <tr danger="info">
                     <th rowspan="2">E</th>
                     <td>E_icode</td>
                     <td>E_ifunc</td>
@@ -196,7 +196,7 @@
                 </tr>
 
 
-                <tr>
+                <tr class="info">
                     <th rowspan="2">M</th>
                     <td>M_icode</td>
                     <td>bch</td>
@@ -223,7 +223,7 @@
                  
                 </tr>
 
-                <tr>
+                <tr class="warning">
                     <th rowspan="2">W</th>
                     <td>W_icode</td>
                     <td>W_valE</td>
@@ -256,6 +256,7 @@
 
     <!-- Load JS here for greater good =============================-->
     <script src="js/jquery-1.8.3.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/home.js"></script>
 
 </body>
