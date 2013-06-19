@@ -110,6 +110,121 @@ OF=False
 global CF
 CF=False
 
+def clear():
+    global Text
+    Text=[]
+    global LineNum
+    LineNum=[]
+    global RealNum
+    RealNum=[]
+    global halt
+    halt=False
+    global end
+    end=False
+    global ret
+    ret=False
+    global stall
+    stall=False
+
+    global total_cycle
+    total_cycle=1
+
+    global valid_cycle
+    valid_cycle=0
+
+    global F_icode
+    F_icode=""
+    global pc
+    pc="00000000"
+    global D_index
+    D_index="X"
+    global D_icode
+    D_icode="0"
+    global D_ifunc
+    D_ifunc=""
+    global rA
+    rA=""
+    global rB
+    rB=""
+    global D_valC
+    D_valC=""
+    global D_valP
+    D_valP=""
+    global E_index
+    E_index="X"
+    global E_icode
+    E_icode="0"
+    global E_ifunc
+    E_ifunc=""
+    global E_valC
+    E_valC=""
+    global E_valA
+    E_valA=""
+    global E_valB
+    E_valB=""
+    global E_dstE
+    E_dstE=""
+    global E_dstM
+    E_dstM=""
+    global M_index
+    M_index="X"
+    global M_icode
+    M_icode="0"
+    global bch
+    bch=""
+    global M_valE
+    M_valE=""
+    global M_valM
+    M_valM=""
+    global M_dstE
+    M_dstE=""
+    global M_dstM
+    M_dstM=""
+    global srcA
+    srcA=""
+    global srcB
+    srcB=""
+    global W_index
+    W_index="X"
+    global W_icode
+    W_icode="0"
+    global W_valE
+    W_valE=""
+    global W_valM
+    W_valM=""
+    global W_dstE
+    W_dstE=""
+    global W_dstM
+    W_dstM=""
+    global ZF
+    ZF=False
+    global SF
+    SF=False
+    global OF
+    OF=False
+    global CF
+    CF=False
+
+    global eax
+    eax="00000000"
+    global ecx
+    ecx="00000000"
+    global edx
+    edx="00000000"
+    global ebx
+    ebx="00000000"
+    global esp
+    esp="00000000"
+    global ebp
+    ebp="00000000"
+    global esi
+    esi="00000000"
+    global edi
+    edi="00000000"
+
+    global Memory
+    Memory={}
+
 def arc(s):
     return s[6]+s[7]+s[4]+s[5]+s[2]+s[3]+s[0]+s[1]
 
