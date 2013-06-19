@@ -146,6 +146,13 @@ def executeY86(Reg,Mem,Wrd=[""]):
             raise Y86err("Logical Error!!!")
         try:
             _reg,_mem = getY86()
+            for i in range(0,2048):
+                s=str(hex(i))
+                s=s[2:]
+                while len(s)<8:
+                    s="0"+s
+                if s in Reg:
+                    _reg[s]=Reg[s]
             return _reg,_mem
         except:
             raise Y86err("The Inner Information is Error!")
