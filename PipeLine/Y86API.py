@@ -133,30 +133,35 @@ def initY86(linelist):
     Readin.linelist=linelist[:]
     Readin.readin()
 
-def executeY86(Reg,Mem,Wrd=[""]):
-    if(Wrd[0]==""):
+def executeY86(Reg,Mem,Wrd=None):
+    if not Reg:
         try:
             setY86(Reg,Mem)
         except:
-            raise Y86err("The Register or Memory you set is not fitable!")
+            pass
+            # raise Y86err("The Register or Memory you set is not fitable!")
         try:
             exeY86()
         except:
-            raise Y86err("Logical Error!!!")
+            pass
+            # raise Y86err("Logical Error!!!")
     else:
         try:
             initY86(Wrd)
         except:
-            raise Y86err("The YO File Information You Post is not fitable!")
+            pass
+            # raise Y86err("The YO File Information You Post is not fitable!")
         try:
             exeY86()
         except:
-            raise Y86err("Logical Error!!!")
+            pass
+            # raise Y86err("Logical Error!!!")
     try:
         _reg,_mem = getY86()
         return _reg,_mem
     except:
-        raise Y86err("The Inner Information is Error!")
+        pass
+        # raise Y86err("The Inner Information is Error!")
     
 
 
