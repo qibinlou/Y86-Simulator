@@ -1,8 +1,18 @@
 
 body{
-    margin: 10%;
+    margin: 1%;
     padding: 0px;
     background-color: #eee;
+    overflow-x: hidden;
+}
+
+header{
+    width: 100%;
+    position: absolute;
+    display: block;
+    top: 0px;
+    left: 0px;
+
 }
 
 
@@ -13,6 +23,26 @@ body{
 #info{
     margin: 1% auto;
 }
+
+
+tr:hover{
+    background-color:#f04530;
+    color:#f04530;
+}
+
+
+#memocont{
+    display: block;
+    max-height: 400px;
+    overflow-y: scroll;
+}
+
+#info td{
+    min-width: 80px;
+}
+
+
+
 
 /*table{
     border: 2px solid silver;

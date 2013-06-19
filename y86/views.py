@@ -17,18 +17,26 @@ def home(request):
 
 def upload(request):
 
+    result = {}
     for item in request.FILES.getlist('files'):
+        if SourceCode.objects.filter(name=item.name).exists():
+            result[item.name] = SourceCode.objects.get(name=item.name).id
+            continue
         content = item.readlines() 
         sc = SourceCode(name=item.name,code=json.dumps(content))
         sc.save()
+        result[item.name] = sc.id
 
         phase = Phase()
         phase.source_code = sc
+        #print content
         reg,mem = executeY86(None,None,content)
+        print reg['total_cycle']
+        del content
         phase.register,phase.memory = json.dumps(reg), json.dumps(mem)
         phase.save()
 
-    return  HttpResponse(200)
+    return  HttpResponse(json.dumps(result))
 
 
    
@@ -39,7 +47,7 @@ def phase(request):
     if 'source_id' in request.GET and request.GET['source_id']:
         try:
             source = SourceCode.objects.get(id=request.GET['source_id'])
-            # print source.code
+            # #print source.code
         except:
             pass
             #need to be done.
@@ -50,14 +58,15 @@ def phase(request):
         memory = {}
         cycle = int(request.GET['cycle'])
         
-        if Phase.objects.filter(source_code=source,cycle=cycle).exists():
+        if Phase.objects.filter(source_code=source , cycle=cycle).exists():
             p = Phase.objects.filter(source_code=source).get(cycle=cycle)
             register, memory = json.loads(p.register), json.loads(p.memory)
             result = {"source_id": source.id, "reg":register,"memo":memory}
-            print "ssss"
+            #print "ssss"
             return HttpResponse(json.dumps(result))
         else:
-            print "sfj23242342"
+            #print "sfj23242342"
+            pass
 
 
         if cycle < source.max_cycle:
@@ -65,9 +74,9 @@ def phase(request):
         else:
             temp_max_cycle = source.max_cycle
             
-        # print temp_max_cycle
+        # #print temp_max_cycle
         p = Phase.objects.filter(source_code=source).get(cycle=temp_max_cycle)
-        # print p
+        # #print p
         register, memory = json.loads(p.register), json.loads(p.memory)
         
 
@@ -75,18 +84,19 @@ def phase(request):
         
         # for current_cycle in range(temp_max_cycle+1, cycle+1):
         #             register,memory = executeY86(register, memory)
-        while (register['total_cycle'] != cycle) and (register['end'] != True):
-            print register,memory
+        while (register['total_cycle'] < cycle) and (register['end'] != True):
+            # print register,memory
             register,memory = executeY86(register, memory)
-        source.max_cycle = cycle
+        source.max_cycle = register['total_cycle']
         source.save()
 
         phase = Phase()
         phase.source_code = source
         phase.register,phase.memory = json.dumps(register), json.dumps(memory)
         phase.cycle = register['total_cycle']
-        phase.save()
-        print register
+        if not Phase.objects.filter(source_code=phase.source_code).filter(cycle=phase.cycle).exists():
+            phase.save()
+        #print register
         result = {"source_id": source.id, "reg":register,"memo":memory}
         return HttpResponse(json.dumps(result))
 
@@ -102,11 +112,11 @@ def phase(request):
         # except Exception, e:
         #     try:
         #         if cycle < 
-        #         print source.max_cycle
+        #         #print source.max_cycle
         #         p = Phase.objects.filter(source_code=source).get(cycle=source.max_cycle)
-        #         print p
+        #         #print p
         #         register, memory = json.loads(p.register), json.loads(p.memory)
-        #         print register['total_cycle']
+        #         #print register['total_cycle']
         #         temp_max_cycle = 1 if cycle < source.max_cycle else source.max_cycle
         #         for current_cycle in range(temp_max_cycle, cycle+1):
         #             register,memory = executeY86(register, memory)
@@ -121,7 +131,7 @@ def phase(request):
                 
 
             # except Exception, e:
-            #     print e
+            #     #print e
             # else:
             #     pass
             # finally:
