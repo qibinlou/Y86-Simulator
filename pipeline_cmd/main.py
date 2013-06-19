@@ -5,10 +5,10 @@ clocknum=0
 def nothing():
     return 0
 
-def arc(s):
+def arc(s):#大端法与小端法转换
     return s[6]+s[7]+s[4]+s[5]+s[2]+s[3]+s[0]+s[1]
 
-def forwarding(src):
+def forwarding(src):#实现转发机制
     global e_icode
     global e_dstE
     global e_valE
@@ -23,12 +23,12 @@ def forwarding(src):
             return e_valE
     if((e_icode=="d") and (src=="4")):
             return e_valE
-    if((e_icode=="d") and (src=="5")):
+    if((e_icode=="d") and (src=="5")):#对于leave的加载使用冒险判断
             return "X"
-    if(((e_icode=="5") or (e_icode=="b")) and (e_dstE==src)):
+    if(((e_icode=="5") or (e_icode=="b")) and (e_dstE==src)):#对于mrmovl的加载使用冒险判断
             return "X"
 
-    if(((m_icode=="2") or (m_icode=="3") or (m_icode=="6") or (m_icode=="8") or (m_icode=="9") or (m_icode=="a") or (m_icode=="c")) and (m_dstE==src)):
+    if(((m_icode=="2") or (m_icode=="3") or (m_icode=="6") or (m_icode=="8") or (m_icode=="9") or (m_icode=="a") or (m_icode=="c")) and (m_dstE==src)):#如果已经进入了memory阶段，就可以直接转发，不需要暂停一个周期
             return m_valE
     if((m_icode=="b") and (src=="4")):
             return m_valE
@@ -42,7 +42,7 @@ def forwarding(src):
     return data.RegRead(src)
 
 #-----------------------
-def execute():
+def execute():#执行一个clock
     global ret_pc
     global jmp_pc
     global call_pc
@@ -80,7 +80,7 @@ def execute():
     global f_valP
     global total_cycle
     global valid_cycle
-    while(data.isend()==False):
+    while(data.isend()==False):#如果程序的结束状态为假，继续执行
         #data.show()
         #global clocknum
         #clocknum+=1
@@ -97,7 +97,7 @@ def execute():
         #print("CLOCK-------------------------------")
 #WriteBack---------------------------------
         #print("writeback:")
-        w_icode=data.read("W_icode")
+        w_icode=data.read("W_icode")#从外部寄存器读入信号
         w_valE=data.read("W_valE")
         w_valM=data.read("W_valM")
         w_dstE=data.read("W_dstE")
@@ -105,7 +105,7 @@ def execute():
     
         if(w_icode=="0"):#nop
             nothing()
-        elif(w_icode=="1"):#halt
+        elif(w_icode=="1"):#halt  如果halt阶段执行完writeback阶段，程序就结束了，并且强行清空之前的4个阶段
             data.write("M_index","X")
             data.write("M_icode","0")
             data.write("E_index","X")
@@ -155,7 +155,7 @@ def execute():
         m_dstE=""
         m_dstM=""
 
-        m_icode=data.read("M_icode")
+        m_icode=data.read("M_icode")#从外部读入信号
         m_valE=data.read("M_valE")
         m_valM=data.read("M_valM")
         m_dstE=data.read("M_dstE")
@@ -166,7 +166,7 @@ def execute():
             m_valM=""
             m_dstE=""
             m_dstM=""
-        elif(m_icode=="1"):#halt
+        elif(m_icode=="1"):#halt 一旦halt出现就要强行结束之前的3个阶段
             data.write("E_index","X")
             data.write("E_icode","0")
             data.write("D_index","X")
@@ -187,9 +187,9 @@ def execute():
             nothing()
         elif(m_icode=="8"):#call
             data.MemoryWrite(m_valE,m_valM)
-        elif(m_icode=="9"):#ret
+        elif(m_icode=="9"):#ret ret阶段也要清空之前的所有阶段，直到下一步的指令明确
             m_valM=data.MemoryRead(m_dstM)
-            ret_pc=arc(m_valM)
+            ret_pc=arc(m_valM)# 从内存中读取出来的pc，用于更新pred_pc
             data.write("E_index","X")
             data.write("E_icode","0")
             data.write("D_index","X")
@@ -207,7 +207,7 @@ def execute():
     
         data.write("W_index",data.read("M_index"))
     
-        data.write("W_icode",m_icode)
+        data.write("W_icode",m_icode)#将信号写入下一阶段
         data.write("W_valE",m_valE)
         data.write("W_valM",m_valM)
         data.write("W_dstE",m_dstE)
@@ -222,7 +222,7 @@ def execute():
         e_dstE=""
         e_dstM=""
 
-        e_icode=data.read("E_icode")
+        e_icode=data.read("E_icode")#从外部读入信号
         e_ifunc=data.read("E_ifunc")
         e_valC=data.read("E_valC")
         e_valA=data.read("E_valA")
@@ -239,7 +239,7 @@ def execute():
             e_valM=""
             e_dstE=""
             e_dstM=""
-        elif(e_icode=="1"):#halt
+        elif(e_icode=="1"):#halt 清空之前所有阶段
             data.write("D_index","X")
             data.write("D_icode","0")
             data.write("pc","X")
@@ -264,15 +264,15 @@ def execute():
             e_valE=data.alu(e_ifunc,aluA,aluB)
             e_dstE=srcB
         elif(e_icode=="7"):#jmp
-            if(data.check(e_ifunc)):
+            if(data.check(e_ifunc)):#根据CF，SF，OF，ZF判断是否跳转
                 data.write("D_index","X")
                 data.write("D_icode","0")
                 data.write("pc","X")
                 data.write("F_icode","0")
-                jmp_pc=arc(e_valC)
+                jmp_pc=arc(e_valC)#如果要改变当前流程的话，记录对应的pc值
                 e_bch=jmp_pc
         elif(e_icode=="8"):#call
-            e_valM=e_valB
+            e_valM=e_valB#将返回地址存入栈中
             aluA=e_valA
             aluB="04000000"
             e_valE=data.alu("1",aluB,aluA)
@@ -315,7 +315,7 @@ def execute():
             e_dstE="4"
         data.write("M_index",data.read("E_index"))
 
-        data.write("M_icode",e_icode)
+        data.write("M_icode",e_icode)#把信号写入到下一阶段
         data.write("bch",e_bch)
         data.write("M_valE",e_valE)
         data.write("M_valM",e_valM)
@@ -334,7 +334,7 @@ def execute():
         d_srcA=""
         d_srcB=""
     
-        d_icode=data.read("D_icode")
+        d_icode=data.read("D_icode")#从外部读入信号
         d_ifunc=data.read("D_ifunc")
         ra=data.read("rA")
         rb=data.read("rB")
@@ -354,11 +354,11 @@ def execute():
         elif(d_icode=="1"):#halt
             nothing()
         elif(d_icode=="2"):#rrmovl
-            Temp=forwarding(ra)
+            Temp=forwarding(ra)#判断是否存在加载使用冒险
             if(Temp=="X"):
-                data.setstall()
+                data.setstall()#存在就暂停
             else:
-                d_valA=Temp
+                d_valA=Temp#否则取得forwarding的值
             d_dstE=rb
             d_srcA=ra
             d_srcB=rb
@@ -366,12 +366,12 @@ def execute():
             d_valA=d_valC
             d_dstE=rb
         elif(d_icode=="4"):#rmmovl-------------------------------------------------------------
-            Temp=forwarding(ra)
+            Temp=forwarding(ra)#判断要读取的寄存器a是否存在冒险
             if(Temp=="X"):
                 data.setstall()
             else:
                 d_valA=Temp
-            Temp=forwarding(rb)
+            Temp=forwarding(rb)#判断要读取的寄存器b是否存在冒险
             if(Temp=="X"):
                 data.setstall()
             else:
@@ -379,7 +379,7 @@ def execute():
             d_srcA=ra
             d_srcB=rb
         elif(d_icode=="5"):#mrmovl-------------------------------------------------------
-            Temp=forwarding(rb)
+            Temp=forwarding(rb)#判断寄存器a是否存在冒险
             if(Temp=="X"):
                 data.setstall()
             else:
@@ -388,12 +388,12 @@ def execute():
             d_srcA=ra
             d_srcB=rb
         elif(d_icode=="6"):#op------------------------------------------------------------------------
-            Temp=forwarding(ra)
+            Temp=forwarding(ra)#判断寄存器a是否存在冒险
             if(Temp=="X"):
                 data.setstall()
             else:
                 d_valA=Temp
-            Temp=forwarding(rb)
+            Temp=forwarding(rb)#判断寄存器b是否存在冒险
             if(Temp=="X"):
                 data.setstall()
             else:
@@ -404,7 +404,7 @@ def execute():
         elif(d_icode=="7"):#jmp----------------------
             nothing()
         elif(d_icode=="8"):#call---------------------
-            Temp=forwarding("4")
+            Temp=forwarding("4")#特别要注意的是call隐式调用了esp，需要判断是否冒险
             if(Temp=="X"):
                 data.setstall()
             else:
@@ -413,7 +413,7 @@ def execute():
             d_srcA="4"
             d_dstE="4"
         elif(d_icode=="9"):#ret--------------------------------------
-            Temp=forwarding("4")
+            Temp=forwarding("4")#ret 调用了esp，需要判断冒险
             if(Temp=="X"):
                 data.setstall()
             else:
@@ -421,7 +421,7 @@ def execute():
             d_dstE="4"
             d_srcA="4"
         elif(d_icode=="a"):#push-------------------------------------
-            Temp=forwarding(ra)
+            Temp=forwarding(ra)#push 同时调用了esp ebp需要同时判断冒险
             if(Temp=="X"):
                 data.setstall()
             else:
@@ -435,7 +435,7 @@ def execute():
             d_srcB="4"
             d_dstE="4"
         elif(d_icode=="b"):#popl---------------------------------------------------------------
-            Temp=forwarding("4")
+            Temp=forwarding("4")#pop 调用了esp，需要判断冒险
             if(Temp=="X"):
                 data.setstall()
             else:
@@ -444,7 +444,7 @@ def execute():
             d_srcA=ra
             d_srcB="4"
         elif(d_icode=="c"):#iaddl-------------------------------------------------------------
-            Temp=forwarding(ra)
+            Temp=forwarding(ra)#判断iaddl的寄存器冒险
             if(Temp=="X"):
                 data.setstall()
             else:
@@ -453,7 +453,7 @@ def execute():
             d_dstE=ra
             d_srcA=ra
         elif(d_icode=="d"):#leave------------------------------------------------------------
-            Temp=forwarding("5")
+            Temp=forwarding("5")#leave要读取ebp，需要判断冒险
             if(Temp=="X"):
                 data.setstall()
             else:
@@ -462,10 +462,10 @@ def execute():
             d_dstM="5"
             d_srcA="5"
 
-        if(data.isstall()):
+        if(data.isstall()):#如果说cycle中的decode和fetch处于暂停状态的话，在下一个Execute阶段需要插入一个bubble
             data.write("E_icode","0")
             data.write("E_index","X")
-        else:
+        else:#其他情况下，正常复制信号到外部寄存器
             data.write("E_index",data.read("D_index"))
     
             data.write("E_icode",d_icode)
@@ -487,10 +487,10 @@ def execute():
         f_valC=""
         f_valP=""
     
-        f_icode=data.read("F_icode")
+        f_icode=data.read("F_icode")#从外部寄存器读入信号
         pc=data.read("pc")    
     
-        if(pc=="X"):
+        if(pc=="X"):#如果Fetch阶段因为stall不能取指，那么Fetch阶段本次不执行，但是需要将stall的一回合锁定取消，以保证下次能取指
             data.write("D_index","X")
             data.write("D_icode","0")
             data.write("F_icode","1")
@@ -504,7 +504,7 @@ def execute():
             data.write("rB",f_rb)
             data.write("D_valC",f_valC)
             data.write("D_valP",f_valP)
-        elif(f_icode=="0"):
+        elif(f_icode=="0"):#如果Fetch阶段是因为ret和jXX被清零，那么同样恢复合法状态，保证下次能取指
             data.write("D_index","X")
             data.write("D_icode","0")
             data.write("F_icode","1")
@@ -518,7 +518,7 @@ def execute():
             data.write("rB",f_rb)
             data.write("D_valC",f_valC)
             data.write("D_valP",f_valP)
-        else:
+        else:#如果就是合法，那么就根据内容正常取指
             pred_pc=data.next(pc)
             s=data.MemoryGet(pc)
                     
@@ -569,7 +569,7 @@ def execute():
             
             if(data.isstall()):
                 nothing()
-            else:
+            else:#不暂停的合法状态下，将信号写入下一个Decode阶段
                 data.write("D_index",pc)
                 data.write("D_icode",f_icode)
                 data.write("D_ifunc",f_ifunc)
@@ -581,21 +581,21 @@ def execute():
                 else:
                     data.write("D_valP","X")
 #PC------------------------------------
-        data.intwrite("total_cycle",total_cycle)
-        data.intwrite("valid_cycle",valid_cycle)
+        data.intwrite("total_cycle",total_cycle)#将总周期数写入外部
+        data.intwrite("valid_cycle",valid_cycle)#将实际执行的周期数写入外部
         #print("PC:")
         if(data.isstall()):
             data.start()
             return 0
 
-        if(ret_pc!=""):
-            data.write("pc",ret_pc)
+        if(ret_pc!=""):#判断下一个pc应该取什么值
+            data.write("pc",ret_pc)#有ret先取ret_pc
         elif(call_pc!=""):
-            data.write("pc",call_pc)
+            data.write("pc",call_pc)#有call，取call_pc
         elif(jmp_pc!=""):
-            data.write("pc",jmp_pc)
+            data.write("pc",jmp_pc)#有jXX,取jmp_pc
         elif(pred_pc!=""):
-            data.write("pc",pred_pc)
+            data.write("pc",pred_pc)#都没有的情况下取得下一个pc
         return 0
         #print("-------------------------Final--------------------------")
 

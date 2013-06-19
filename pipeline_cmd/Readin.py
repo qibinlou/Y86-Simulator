@@ -1,7 +1,7 @@
 import data
 linelist=[]
     
-def readin():
+def readin():#用于使用程序文件中的信息初始化memory
     global linelist
     for i in range(0,len(linelist)):
         line=linelist[i]
@@ -15,14 +15,14 @@ def readin():
         s=line[p1+2:]
         p2=s.find(" ")
         s=s[:p2]
-        data.LineNum.append("00000"+line[p1-3:p1])
+        data.LineNum.append("00000"+line[p1-3:p1])#补全指令起始位置为八位十六进制
         data.RealNum.append(i)
         data.Text.append(s)
 
     i=0
     while i<len(data.LineNum):
         #print (data.LineNum[i]+":"+data.Text[i])
-        data.MemoryCopy(data.LineNum[i],data.Text[i])
+        data.MemoryCopy(data.LineNum[i],data.Text[i])#写入内存
         i+=1
 
 

@@ -1,7 +1,7 @@
 import data
 import Readin
 import main
-def setY86(register,memory):
+def setY86(register,memory):#为外部更改Y86各个阶段的寄存器提供写接口
     data.write("CF",register["CF"])
     data.write("OF",register["OF"])
     data.write("ZF",register["ZF"])
@@ -61,7 +61,7 @@ def setY86(register,memory):
 
     data.Memory=memory
 
-def getY86():
+def getY86():#将现在Y86各个阶段的值传递出去，提供读接口
     #global register
     register={}
     #global memory
@@ -126,15 +126,16 @@ def getY86():
     memory=data.Memory
     return register,memory    
     
-def exeY86():
+def exeY86():#执行一次
     main.execute()
 
-def initY86(linelist):
-    Readin.linelist=linelist[:]
-    Readin.readin()
+def initY86(linelist):#初始化Y86中的所有内容
+    data.clear()#清空
+    Readin.linelist=linelist[:]#复制文件字符串
+    Readin.readin()#写入内存
 
-def executeY86(Reg,Mem,Wrd=[""]):
-    if(Wrd[0]==""):
+def executeY86(Reg,Mem,Wrd=[""]):#提供读写合一的外部接口
+    if(Wrd[0]==""):#如果不传递程序文件的字符串列表，那就根据外部提供的信号和内存内容执行一个周期
         try:
             setY86(Reg,Mem)
         except:
@@ -148,7 +149,7 @@ def executeY86(Reg,Mem,Wrd=[""]):
             return _reg,_mem
         except:
             raise Y86err("The Inner Information is Error!")
-    else:
+    else:#如果
         try:
             initY86(Wrd)
         except:
@@ -161,7 +162,7 @@ def executeY86(Reg,Mem,Wrd=[""]):
             _reg,_mem = getY86()
             for i in range(0,len(data.RealNum)):
                 _reg[data.LineNum[i]]=data.RealNum[i]
-                print(data.LineNum[i])
+                #print(data.LineNum[i])
             return _reg,_mem
         except:
             raise Y86err("The Inner Information is Error!")
