@@ -143,6 +143,11 @@ def executeY86(Reg,Mem,Wrd=[""]):
             exeY86()
         except:
             raise Y86err("Logical Error!!!")
+        try:
+            _reg,_mem = getY86()
+            return _reg,_mem
+        except:
+            raise Y86err("The Inner Information is Error!")
     else:
         try:
             initY86(Wrd)
@@ -152,11 +157,14 @@ def executeY86(Reg,Mem,Wrd=[""]):
             exeY86()
         except:
             raise Y86err("Logical Error!!!")
-    try:
-        _reg,_mem = getY86()
-        return _reg,_mem
-    except:
-        raise Y86err("The Inner Information is Error!")
+        try:
+            _reg,_mem = getY86()
+            for i in range(0,len(data.RealNum)):
+                _reg[data.LineNum[i]]=data.RealNum[i]
+                print(data.LineNum[i])
+            return _reg,_mem
+        except:
+            raise Y86err("The Inner Information is Error!")
     
 
 

@@ -2,6 +2,8 @@ global Text
 Text=[]
 global LineNum
 LineNum=[]
+global RealNum
+RealNum=[]
 global halt
 halt=False
 global end

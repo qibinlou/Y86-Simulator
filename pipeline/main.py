@@ -81,7 +81,7 @@ def execute():
     global total_cycle
     global valid_cycle
     while(data.isend()==False):
-        data.show()
+        #data.show()
         #global clocknum
         #clocknum+=1
         #print("CLOCK_NO:%d" %(clocknum))

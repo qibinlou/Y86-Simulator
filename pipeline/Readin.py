@@ -16,6 +16,7 @@ def readin():
         p2=s.find(" ")
         s=s[:p2]
         data.LineNum.append("00000"+line[p1-3:p1])
+        data.RealNum.append(i)
         data.Text.append(s)
 
     i=0
