@@ -1,0 +1,369 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello,nimei</title>
+    
+    <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Loading Flat UI -->
+    <link href="/static/css/flat-ui.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    <link rel="shortcut icon" href="/static/images/favicon.ico">
+    <script src="/static/js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="/static/js/shCore.js"></script>
+    <script type="text/javascript" src="/static/js/shBrushPhp.js"></script>
+    <!-- <link type="text/css" rel="stylesheet" href="/static/css/shCoreDefault.css"> -->
+    <link rel="stylesheet" type="text/css" href="/static/css/shCoreFadeToGrey.css">
+    <script type="text/javascript">
+        SyntaxHighlighter.defaults['first-line'] = 0;
+        SyntaxHighlighter.all();
+    </script>
+
+    
+   
+</head>
+<body>
+
+    <header>
+        <div class="navbar navbar-inverse">
+            <div class="navbar-inner">
+              <div class="container">
+                <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target="#nav-collapse-01"></button>
+                <div class="nav-collapse collapse" id="nav-collapse-01">
+                  <ul class="nav">
+                    <li>
+                      <a href="#" onclick="$('input[id=files]').click();">
+                        Open
+                        <span class="navbar-unread">1</span>
+                      </a>
+                    </li>
+                    <li id="upload">
+                      <a href="#">Upload</a>
+                    </li>
+                    
+                    <li class="active">
+                      <a href="#">
+                        Files
+                        <span class="navbar-unread">1</span>
+                      </a>
+                      <ul id="filelist">
+                        {% for item in files %}
+                            <li><a style='color:white;text-decoration:none;'source_id={{item.id}}>{{item.name}}</a></li>
+                        {% endfor%}
+                      </ul> <!-- /Sub menu -->
+                    </li>
+                    <li id="togglememo">
+                      <a href="#">Memory</a>
+                    </li>
+                    <li id="togglecond">
+                      <a href="#">Condition Codes</a>
+                    </li>
+                    <li id="togglereg">
+                      <a href="#">Registers</a>
+                    </li>
+                    <li id="toggleinfo">
+                      <a href="#">Stage Infomation</a>
+                    </li>
+                    <li id="togglecodes">
+                      <a href="#">Codes</a>
+                    </li>
+                    <li >
+                      <a href="#"  class="btn-danger btn btn-small"  id="cpi">CPI</a>
+                    </li>
+                    <li >
+                      <a href="#" class="btn-warning btn btn-small"  id="cycle">Cycle</a>
+                    </li>
+                  </ul>
+                </div><!--/.nav -->
+            </div>
+        </div>
+    
+    </header>
+
+   <div style="display:none;">
+       <form method="post" action="/upload" enctype="multipart/form-data" target="hidden_frame" id="form">
+        <input type="file" multiple name="files" accept="text/yo" id="files">
+        <button type="submit" id="submit">Submit</button>
+        </form>
+        <iframe name='hidden_frame' id="hidden_frame" style='display:none'></iframe>
+
+        <div id="slider" class="ui-slider">
+            <div class="ui-slider-segment"></div>
+            <div class="ui-slider-segment"></div>
+            <div class="ui-slider-segment"></div>
+        </div>
+    </div>
+
+   
+ 
+
+    <div style="margin-top: 100px;">
+          <div class="row demo-navigation" style="display:">
+            <div class="span3">
+              <div class="btn-toolbar">
+                <div class="btn-group">
+                  <a id="back" class="btn btn-danger" href="#fakelink"><img src="/static/images/back.png"></a>
+                  <a id="start" class="btn btn-primary active" href="#fakelink"><img src="/static/images/play.png"></a>
+    
+                  <a id="next" class="btn btn-warning" href="#fakelink"><img src="/static/images/next.png"></a>
+                  <a id="init" class="btn btn-info" href="#fakelink"><img src="/static/images/refresh.png"></a>
+                  <i class="icon-search icon-white"></i>
+                </div>
+        </div> <!-- /toolbar -->
+        <!-- <button class="btn btn-warning btn-large" id="cpi">CPI</button>
+         <button class="btn btn-danger btn-large" id="cycle">Cycle</button> -->
+        <input type="range" min=50 max=2000 step=1 id="speed">
+
+        <!-- <div class="switch has-switch"><div class="switch-on switch-animate" style=""><input type="checkbox" checked="" data-toggle="switch"><span class="switch-left">ON</span><label>&nbsp;</label><span class="switch-right">OFF</span></div></div> -->
+
+    </div>
+ 
+
+  
+
+
+    <div id="registers" class="span3 dragresize">
+        <table class="table table-bordered table-hover">
+            <tr>
+                <td>%eax</td>
+                <td id="eax">&nbsp;</td>
+            </tr>
+            <tr>
+                <td>%ecx</td>
+                <td id="ecx">&nbsp;</td>
+            </tr>
+            <tr>
+                <td>%edx</td>
+                <td id="edx">&nbsp;</td>
+            </tr>
+            <tr>
+                <td>%ebx</td>
+                <td id="ebx">&nbsp;</td>
+            </tr>
+            <tr>
+                <td>%ebp</td>
+                <td id="ebp">&nbsp;</td>
+            </tr>
+            <tr>
+                <td>%esp</td>
+                <td id="esp">&nbsp;</td>
+            </tr>
+            <tr>
+                <td>%esi</td>
+                <td id="esi">&nbsp;</td>
+            </tr>
+            <tr>
+                <td>%edi</td>
+                <td id="edi">&nbsp;</td>
+            </tr>
+        </table>
+    </div>
+
+    <div  class="span3 dragresize" id="memocont" >
+        <table class="table table-bordered table-hover" id="memory">
+        </table>
+    </div>
+
+
+
+     <div class="span3 dragresize" id="condcode">
+        <table class="table table-bordered table-hover" >
+            <tr>
+                <td>CF</td>
+                <td id="cf">&nbsp;</td>
+            </tr>
+            <tr>
+                <td>OF</td>
+                <td id="of">&nbsp;</td>
+            </tr>
+            <tr>
+                <td>ZF</td>
+                <td id="zf">&nbsp;</td>
+            </tr>
+            <tr>
+                <td>SF</td>
+                <td id="sf">&nbsp;</td>
+            </tr>
+        </table>
+    </div>
+
+
+    <div id="info" class="span7 dragresize" >
+        <table class="table table-bordered table-hover">
+            <thead>
+            </thead>
+            <tbody>
+                <tr >
+                    <th rowspan="2" >F</th>
+                    <td>pc</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                 
+                </tr>
+                <tr>
+                     <td id="pc">&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                 
+                </tr>
+
+
+                <tr >
+                    <th rowspan="2">D</th>
+                    <td>D_icode</td>
+                    <td>D_ifunc</td>
+                    <td>rA</td>
+                    <td>rB</td>
+                    <td>D_valC</td>
+                    <td>D_valP</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+               
+                </tr>
+                <tr>
+                    <td id="dicode">&nbsp;</td>
+                    <td id="difunc">&nbsp;</td>
+                    <td id="ra">&nbsp;</td>
+                    <td id="rb">&nbsp;</td>
+                    <td id="dvalc">&nbsp;</td>
+                    <td id="dvalp">&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+               
+                </tr>
+
+                <tr>
+                    <th rowspan="2">E</th>
+                    <td>E_icode</td>
+                    <td>E_ifunc</td>
+                    <td class="sapn4">E_valC</td>
+                    <td>E_valA</td>
+                    <td>E_valB</td>
+                    <td>E_dstE</td>
+                    <td>E_dstM</td>
+                    <td>srcA</td>
+                    <td>srcB</td>
+                
+                </tr>
+                <tr>
+            
+                    <td id="eicode">&nbsp;</td>
+                    <td id="eifunc">&nbsp;</td>
+                    <td id="evalc">&nbsp;</td>
+                    <td id="evala">&nbsp;</td>
+                    <td id="evalb">&nbsp;</td>
+                    <td id="edste">&nbsp;</td>
+                    <td id="edstm">&nbsp;</td>
+                    <td id="srca">&nbsp;</td>
+                    <td id="srcb">&nbsp;</td>
+                
+                </tr>
+
+
+                <tr >
+                    <th rowspan="2">M</th>
+                    <td>M_icode</td>
+                    <td>bch</td>
+                    <td>M_valE</td>
+                    <td>M_valM</td>
+                    <td>M_dstE</td>
+                    <td>M_dstM</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                 
+                </tr>
+                <tr>
+                    
+                    <td id="micode">&nbsp;</td>
+                    <td id="bch">&nbsp;</td>
+                    <td id="mvale">&nbsp;</td>
+                    <td id="mvalm">&nbsp;</td>
+                    <td id="mdste">&nbsp;</td>
+                    <td id="mdstm">&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                 
+                </tr>
+
+                <tr>
+                    <th rowspan="2">W</th>
+                    <td>W_icode</td>
+                    <td>W_valE</td>
+                    <td>W_valM</td>
+                    <td>W_dstE</td>
+                    <td>W_dstM</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  
+                </tr>
+
+                <tr>
+                  
+                    <td id="wicode">&nbsp;</td>
+                    <td id="wvale">&nbsp;</td>
+                    <td id="wvalm">&nbsp;</td>
+                    <td id="wdste">&nbsp;</td>
+                    <td id="wdstm">&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                  
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    
+        <iframe src="/getcode?source_id=1" id="codes" class="span9 dragresize" style="border:15px solid white;">
+            <script src="/static/js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="/static/js/shCore.js"></script>
+    <script type="text/javascript" src="/static/js/shBrushPhp.js"></script>
+    <!-- <link type="text/css" rel="stylesheet" href="/static/css/shCoreDefault.css"> -->
+    <link rel="stylesheet" type="text/css" href="/static/css/shCoreFadeToGrey.css">
+    <script type="text/javascript">
+        SyntaxHighlighter.defaults['first-line'] = 0;
+        SyntaxHighlighter.all();
+    </script>
+        <pre class="brush: php;" contenteditable id="yocode">
+        </pre>
+        </iframe>
+    <!-- Load JS here for greater good =============================-->
+    
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.ui.touch-punch.min.js"></script>
+    <script src="/static/js/bootstrap-select.js"></script>
+    <script src="/static/js/bootstrap-switch.js"></script>
+    <script src="/static/js/flatui-checkbox.js"></script>
+    <script src="/static/js/flatui-radio.js"></script>
+    <script src="/static/js/jquery.tagsinput.js"></script>
+    <script src="/static/js/jquery.placeholder.js"></script>
+    <script src="/static/js/jquery.stacktable.js"></script>
+    <script src="http://vjs.zencdn.net/c/video.js"></script>
+    <script src="/static/js/application.js"></script>
+   <!--  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" /> -->
+  
+    <script type="text/javascript" src="/static/js/home.js"></script>
+
+</body>
+</html>

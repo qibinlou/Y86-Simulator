@@ -1,0 +1,127 @@
+
+body{
+    margin: 1%;
+    padding: 0px;
+    background-color: #f0f0f4;
+    /*overflow:hidden;*/
+}
+
+header{
+    width: 100%;
+    position: absolute;
+    display: block;
+    top: 0px;
+    left: 0px;
+
+}
+
+.success{
+    background-color: teal;
+}
+
+
+::selection { background-color:#f04530;color:#fff;}
+::-mcolor:white;oz-selection { background-
+    color:#f04530;color:#fff;}
+::-webkit-selection { background-color:#f04530;color:#fff;}
+
+#info table{
+    background-color: rgba(60, 99, 182, 0.8);
+    border: 5px solid white;
+    color: white;
+    border-radius: 5px;
+}
+
+
+#memocont table{
+    background-color: rgba(214, 98, 98, 0.73);
+    border: 5px solid white;
+    color: white;
+    border-radius: 5px;
+
+}
+#memocont{
+    position: absolute;
+    left: 600px;
+    top: 70px;
+    max-height: 460px;
+    overflow-y: scroll;
+}
+#registers table {
+    background-color: rgba(47, 162, 139, 0.73);
+    border: 5px solid white;
+    color: white;
+    border-radius: 5px;
+}
+#registers{
+    position: relative;
+    left: 81px;
+    top: 60px;
+}
+#condcode{
+    /*position: relative;*/
+    position: absolute;
+    /*left: -698px;*/
+    left: 25px;
+    top: 296px;
+}
+
+#condcode table{
+    background-color: rgba(29, 167, 211, 0.73);
+    border: 5px solid white;
+    color: white;
+    border-radius: 5px;
+
+}
+
+#info{
+    position: absolute;
+    bottom: 20px;
+    left: 0px;
+
+}
+
+#registers{
+    
+}
+
+
+tr:hover{
+    background-color:#f04530;
+    color:#f04530;
+}
+
+
+/*#memocont{
+    display: block;
+    max-height: 480px;
+    overflow-y: scroll;
+}*/
+
+#info td{
+    min-width: 80px;
+
+}
+
+#codes{
+    position: absolute;
+    right: 0px;
+    top: 70px;
+    height: 100%;
+}
+
+
+
+
+
+
+
+/*table{
+    border: 2px solid silver;
+}
+
+td{
+    border: 2px solid silver;
+    padding: 5px 15px;
+
+}*/
