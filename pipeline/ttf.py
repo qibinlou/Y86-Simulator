@@ -45,10 +45,6 @@ if(s=="n") or (s=="N"):
 while val["end"]==False:
     val,memory=Y86API.executeY86(val,memory)
     data.show()
-    print(val["00000000"])
-    print(val["00000006"])
-    print(val["0000000c"])
-
     print("Next?[\"n\" for exit;\"b\" for back]")
     s=(str)(raw_input())
     if(s=="n") or (s=="N"):

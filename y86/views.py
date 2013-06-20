@@ -11,6 +11,14 @@ from pipeline.Y86API import *
 
 def home(request):
     # source_code = SourceCode.objects.all()
+    files = []
+    sources = SourceCode.objects.all()
+    for item in sources:
+        code = {}
+        code['name'] = item.name
+        code['id']= item.id
+        files.append(code)
+    print files
     
     return render_to_response('index.html', locals())
     # return HttpResponse("hello")
@@ -31,7 +39,7 @@ def upload(request):
         phase.source_code = sc
         #print content
         reg,mem = executeY86(None,None,content)
-        print reg['total_cycle']
+        # print reg['total_cycle']
         del content
         phase.register,phase.memory = json.dumps(reg), json.dumps(mem)
         phase.save()
@@ -99,48 +107,32 @@ def phase(request):
         #print register
         result = {"source_id": source.id, "reg":register,"memo":memory}
         return HttpResponse(json.dumps(result))
-
-
-
-
-
-
-        # try:
-        #     t_phase = Phase.objects.filter(source_code=source).get(cycle=int(request.GET['cycle']))
-        #     register = json.loads(t_phase.register)
-        #     memory = json.loads(t_phase.memory)
-        # except Exception, e:
-        #     try:
-        #         if cycle < 
-        #         #print source.max_cycle
-        #         p = Phase.objects.filter(source_code=source).get(cycle=source.max_cycle)
-        #         #print p
-        #         register, memory = json.loads(p.register), json.loads(p.memory)
-        #         #print register['total_cycle']
-        #         temp_max_cycle = 1 if cycle < source.max_cycle else source.max_cycle
-        #         for current_cycle in range(temp_max_cycle, cycle+1):
-        #             register,memory = executeY86(register, memory)
-        #             # total_cycle = register['total_cycle']
-                    # source.max_cycle = total_cycle
-                    # source.save()
-                    # phase = Phase()
-                    # phase.source_code = source
-                    # phase.register,phase.memory = json.dumps(register), json.dumps(memory)
-                    # phase.cycle = total_cycle
-                    # phase.save()
-                
-
-            # except Exception, e:
-            #     #print e
-            # else:
-            #     pass
-            # finally:
-            #     pass
-            
-        # finally:
-            
     else:
         HttpResponse("step does not exist!")
     return HttpResponse(403)
 
     
+
+def getcode(request):
+    if 'source_id' in request.GET and request.GET['source_id']:
+        try:
+            source = SourceCode.objects.get(id=request.GET['source_id'])
+            html = """
+             <script src="/static/js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="/static/js/shCore.js"></script>
+    <script type="text/javascript" src="/static/js/shBrushPhp.js"></script>
+    <!-- <link type="text/css" rel="stylesheet" href="/static/css/shCoreDefault.css"> -->
+    <link rel="stylesheet" type="text/css" href="/static/css/shCoreFadeToGrey.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/code.css">
+    <script type="text/javascript">
+        SyntaxHighlighter.defaults['first-line'] = 0;
+        SyntaxHighlighter.all();
+    </script>
+        <pre class="brush: php;" contenteditable id="yocode">
+        %s</pre>
+            """ % ("".join(json.loads(source.code)))
+            return HttpResponse(html)
+        except:
+            return HttpResponse(404)
+    else:
+        return HttpResponse(403)

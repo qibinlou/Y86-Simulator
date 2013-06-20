@@ -108,6 +108,14 @@ ROOT_URLCONF = 'y86.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'y86.wsgi.application'
 
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
+
+TEMPLATE_CONTEXT_PROCESSORS = TCP + (
+    'django.core.context_processors.request',
+)
+
+
+
 TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), 'templates').replace('//','/'),  
 	os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates'),
@@ -128,10 +136,11 @@ INSTALLED_APPS = (
     'database',
     'pipeline',
     'assembler',
+	'suit',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admindocs',
 )
 
 # A sample logging configuration. The only tangible logging

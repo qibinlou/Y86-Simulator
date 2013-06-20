@@ -4,10 +4,45 @@ $(document).ready(function() {
     var source_id = 1;
     var current_cycle = 1;
     var running = false;
+    var code_index = {'pc':0,'D_index':0,'E_index':0,'M_index':0,'W_index':0}
 
     function load_data (data) {
         
         reg = data['reg'];
+        // $("#codes").contents().find(num).addClass("highlighted-f");
+
+        num = ".number" + code_index['pc'];
+        $("#codes").contents().find(num).removeClass('highlighted-f');
+        code_index['pc'] = reg[reg['pc']];
+        num = ".number" + code_index['pc'];
+        $("#codes").contents().find(num).addClass('highlighted-f');
+
+        num = ".number" + code_index['D_index'];
+        $("#codes").contents().find(num).removeClass('highlighted-d');
+        code_index['D_index'] = reg[reg['D_index']];
+        num = ".number" + code_index['D_index'];
+        $("#codes").contents().find(num).addClass('highlighted-d');
+
+        num = ".number" + code_index['E_index'];
+        $("#codes").contents().find(num).removeClass('highlighted-e');
+        code_index['E_index'] = reg[reg['E_index']];
+        num = ".number" + code_index['E_index'];
+        $("#codes").contents().find(num).addClass('highlighted-e');
+
+
+        num = ".number" + code_index['M_index'];
+        $("#codes").contents().find(num).removeClass('highlighted-m');
+        code_index['M_index'] = reg[reg['M_index']];
+        num = ".number" + code_index['M_index'];
+        $("#codes").contents().find(num).addClass('highlighted-m');
+
+
+        num = ".number" + code_index['W_index'];
+        $("#codes").contents().find(num).removeClass('highlighted-w');
+        code_index['W_index'] = reg[reg['W_index']];
+        num = ".number" + code_index['W_index'];
+        $("#codes").contents().find(num).addClass('highlighted-w');
+
 
             // for registers
             eax.innerHTML = reg['eax'];
@@ -77,27 +112,41 @@ $(document).ready(function() {
 
     }
 	$("#init").click(function(){
-        $.getJSON("http://localhost:8080/phase",
-            {"source_id" : source_id, "cycle" : 1},
+        current_cycle = 1;
+        $.getJSON("/phase",
+            {"source_id" : source_id, "cycle" : current_cycle},
             load_data);
     })
 
     $("#start").click(function() {
-        running = true;
-        run(current_cycle);
+        if( running == true )
+        {
+          $("#start img").attr("src","/images/pause.png");
+           running = false;
+
+        }
+            
+        else
+        {
+          $("#start img").attr("src","/images/play.png");
+          running = true;
+
+        }
+            
+        run();
     });
 
     function run (cycle)
     {
         if (running == false) return;
-        $.getJSON("http://localhost:8080/phase",
-            {"source_id" : source_id, "cycle" : cycle},
+        $.getJSON("/phase",
+            {"source_id" : source_id, "cycle" :current_cycle},
             function(data){
                 load_data(data);
                 if ( data['reg']['end'] == false )
                 {
                     current_cycle++;
-                    run(current_cycle);
+                    setTimeout(run, Number( speed.value ) );
 
                 }
                     
@@ -118,7 +167,7 @@ $(document).ready(function() {
 
     function gotocycle(cycle)
     {
-        $.getJSON("http://localhost:8080/phase",
+        $.getJSON("/phase",
             {"source_id" : source_id, "cycle" : current_cycle},
             load_data);
 
@@ -132,8 +181,8 @@ $(document).ready(function() {
                     case 32: if( running == true ) running = false;  else { running = true; run(current_cycle); } break;
                     case 37:  gotocycle(--current_cycle);  break;
                     case 39: gotocycle(++current_cycle); break;
-                    case 38:  break;
-                    case 40:  break;
+                    case 38:  speed.value = Number(speed.value) - 20; break;
+                    case 40:  speed.value = Number(speed.value) + 20; break;
                     default:break;
                 }
 
@@ -179,6 +228,8 @@ $(document).ready(function() {
     });
 
   $("#upload").click(function(){
+     // alert("ssss");
+
      len = files.files.length;
      if ( len == 0 )
      {
@@ -195,17 +246,25 @@ $(document).ready(function() {
         }
      }
      $("button[id=submit]").click();
-     result = JSON.parse( hidden_frame.document.body.innerHTML );
-     alert(result);
-     filelist.parentNode.children[0].innerHTML = files.files[0].name;
-     source_id = result[files.files[0].name];
-     alert(source_id);
-     for ( var i = 0; i < len; ++i )
-     {
+     setTimeout(getfromframe, 1000);
+
+  })
+
+  function getfromframe()
+  {
+      result = JSON.parse( hidden_frame.document.body.innerHTML );
+      // alert(result);
+      filelist.parentNode.children[0].innerHTML = files.files[0].name;
+      source_id = result[files.files[0].name];
+      // alert(source_id);
+      filelist.innerHTML = "";
+      for ( var i = 0; i < len; ++i )
+      {
         name = files.files[i].name;
         filelist.innerHTML += "<li><a style='color:white;text-decoration:none;' source_id='"+ result[name] +"'>"+ name +"</a></li>";
-    }
-    $("#filelist a").click(function(){
+      }
+
+      $("#filelist a").click(function(){
         
       filelist.parentNode.children[0].innerHTML = $(this).html();
 
@@ -213,14 +272,47 @@ $(document).ready(function() {
       current_cycle = 1;
       cpi.innerHTML = "CPI";
       cycle.innerHTML = "Cycle";
-      $.getJSON("http://localhost:8080/phase",
+      $.getJSON("/phase",
             {"source_id" : source_id, "cycle" : current_cycle},
             load_data);
 
-     
-    })
+
+      })
+
+  }
 
 
+  $("#filelist a").click(function(){
+        
+      filelist.parentNode.children[0].innerHTML = $(this).html();
+
+      source_id = $(this).attr("source_id");
+      current_cycle = 1;
+      cpi.innerHTML = "CPI";
+      cycle.innerHTML = "Cycle";
+      $.getJSON("/phase",
+            {"source_id" : source_id, "cycle" : current_cycle},
+            load_data);
+      codes.location.assign("/getcode?source_id=" + source_id);
+
+
+
+  })
+
+  $("#togglememo").click(function(){
+    $("#memocont").slideToggle();
+  })
+  $("#togglecond").click(function(){
+    $("#condcode").slideToggle();
+  })
+  $("#togglereg").click(function(){
+    $("#registers").slideToggle();
+  })
+  $("#toggleinfo").click(function(){
+    $("#info").slideToggle();
+  })
+  $("#togglecodes").click(function(){
+    $("#codes").fadeToggle("slow");
   })
 
   

@@ -4,13 +4,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hello,nimei</title>
     
-    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
 
     <!-- Loading Flat UI -->
-    <link href="css/flat-ui.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="shortcut icon" href="images/favicon.ico">
-    <script src="js/jquery-1.8.3.min.js"></script>
+    <link href="/static/css/flat-ui.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    <link rel="shortcut icon" href="/static/images/favicon.ico">
+    <script src="/static/js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="/static/js/shCore.js"></script>
+    <script type="text/javascript" src="/static/js/shBrushPhp.js"></script>
+    <!-- <link type="text/css" rel="stylesheet" href="/static/css/shCoreDefault.css"> -->
+    <link rel="stylesheet" type="text/css" href="/static/css/shCoreFadeToGrey.css">
+    <script type="text/javascript">
+        SyntaxHighlighter.defaults['first-line'] = 0;
+        SyntaxHighlighter.all();
+    </script>
 
     
    
@@ -33,16 +41,41 @@
                     <li id="upload">
                       <a href="#">Upload</a>
                     </li>
+                    
                     <li class="active">
                       <a href="#">
                         Files
                         <span class="navbar-unread">1</span>
                       </a>
                       <ul id="filelist">
+                        {% for item in files %}
+                            <li><a style='color:white;text-decoration:none;'source_id={{item.id}}>{{item.name}}</a></li>
+                        {% endfor%}
                       </ul> <!-- /Sub menu -->
+                    </li>
+                    <li id="togglememo">
+                      <a href="#">Memory</a>
+                    </li>
+                    <li id="togglecond">
+                      <a href="#">Condition Codes</a>
+                    </li>
+                    <li id="togglereg">
+                      <a href="#">Registers</a>
+                    </li>
+                    <li id="toggleinfo">
+                      <a href="#">Stage Infomation</a>
+                    </li>
+                    <li id="togglecodes">
+                      <a href="#">Codes</a>
                     </li>
                     <li>
                       <a href="#">About Us</a>
+                    </li>
+                    <li >
+                      <a href="#"  class="btn-danger btn btn-small"  id="cpi">CPI</a>
+                    </li>
+                    <li >
+                      <a href="#" class="btn-warning btn btn-small"  id="cycle">Cycle</a>
                     </li>
                   </ul>
                 </div><!--/.nav -->
@@ -52,7 +85,7 @@
     </header>
 
    <div style="display:none;">
-       <form method="post" action="/upload" enctype="multipart/form-data" target="hidden_frame">
+       <form method="post" action="/upload" enctype="multipart/form-data" target="hidden_frame" id="form">
         <input type="file" multiple name="files" accept="text/yo" id="files">
         <button type="submit" id="submit">Submit</button>
         </form>
@@ -63,36 +96,29 @@
             <div class="ui-slider-segment"></div>
             <div class="ui-slider-segment"></div>
         </div>
-        
-
     </div>
 
    
  
-
-
-
-
-    <!-- <div id="drop_zones" class="btn btn-block">Drop files here</div> -->
-<output id="list" style="display:none;"></output>
-
-
-
-
 
     <div style="margin-top: 100px;">
           <div class="row demo-navigation" style="display:">
             <div class="span3">
               <div class="btn-toolbar">
                 <div class="btn-group">
-                  <a id="back" class="btn btn-primary" href="#fakelink"><i class="fui-time"></i></a>
-                  <a id="start" class="btn btn-primary" href="#fakelink"><i class="fui-photo"></i></a>
-                  <a id="next" class="btn btn-primary active" href="#fakelink"><i class="fui-heart"></i></a>
-                  <a id="init" class="btn btn-primary" href="#fakelink"><i class="fui-eye"></i></a>
+                  <a id="back" class="btn btn-danger" href="#fakelink"><img src="/static/images/back.png"></a>
+                  <a id="start" class="btn btn-primary active" href="#fakelink"><img src="/static/images/play.png"></a>
+    
+                  <a id="next" class="btn btn-warning" href="#fakelink"><img src="/static/images/next.png"></a>
+                  <a id="init" class="btn btn-info" href="#fakelink"><img src="/static/images/refresh.png"></a>
+                  <i class="icon-search icon-white"></i>
                 </div>
         </div> <!-- /toolbar -->
-        <button class="btn btn-warning btn-large" id="cpi">CPI</button>
-         <button class="btn btn-danger btn-large" id="cycle">Cycle</button>
+        <!-- <button class="btn btn-warning btn-large" id="cpi">CPI</button>
+         <button class="btn btn-danger btn-large" id="cycle">Cycle</button> -->
+        <input type="range" min=50 max=2000 step=1 id="speed">
+
+        <!-- <div class="switch has-switch"><div class="switch-on switch-animate" style=""><input type="checkbox" checked="" data-toggle="switch"><span class="switch-left">ON</span><label>&nbsp;</label><span class="switch-right">OFF</span></div></div> -->
 
     </div>
  
@@ -137,15 +163,15 @@
         </table>
     </div>
 
-    <div  class="span3" id="memocont" class="dragresize">
+    <div  class="span3 dragresize" id="memocont" >
         <table class="table table-bordered table-hover" id="memory">
         </table>
     </div>
 
 
 
-     <div class="span2 dragresize">
-        <table class="table table-bordered table-hover" id="condcode">
+     <div class="span3 dragresize" id="condcode">
+        <table class="table table-bordered table-hover" >
             <tr>
                 <td>CF</td>
                 <td id="cf">&nbsp;</td>
@@ -166,12 +192,12 @@
     </div>
 
 
-    <div id="info" class="span7 dragresize ui-widget-content">
+    <div id="info" class="span7 dragresize" >
         <table class="table table-bordered table-hover">
             <thead>
             </thead>
             <tbody>
-                <tr class="success">
+                <tr >
                     <th rowspan="2" >F</th>
                     <td>pc</td>
                     <td></td>
@@ -198,7 +224,7 @@
                 </tr>
 
 
-                <tr class="danger">
+                <tr >
                     <th rowspan="2">D</th>
                     <td>D_icode</td>
                     <td>D_ifunc</td>
@@ -224,7 +250,7 @@
                
                 </tr>
 
-                <tr danger="info">
+                <tr>
                     <th rowspan="2">E</th>
                     <td>E_icode</td>
                     <td>E_ifunc</td>
@@ -252,7 +278,7 @@
                 </tr>
 
 
-                <tr class="info">
+                <tr >
                     <th rowspan="2">M</th>
                     <td>M_icode</td>
                     <td>bch</td>
@@ -279,7 +305,7 @@
                  
                 </tr>
 
-                <tr class="warning">
+                <tr>
                     <th rowspan="2">W</th>
                     <td>W_icode</td>
                     <td>W_valE</td>
@@ -310,23 +336,37 @@
         </table>
     </div>
 
+    
+        <iframe src="/getcode?source_id=1" id="codes" class="span9 dragresize" style="border:15px solid white;">
+            <script src="/static/js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="/static/js/shCore.js"></script>
+    <script type="text/javascript" src="/static/js/shBrushPhp.js"></script>
+    <!-- <link type="text/css" rel="stylesheet" href="/static/css/shCoreDefault.css"> -->
+    <link rel="stylesheet" type="text/css" href="/static/css/shCoreFadeToGrey.css">
+    <script type="text/javascript">
+        SyntaxHighlighter.defaults['first-line'] = 0;
+        SyntaxHighlighter.all();
+    </script>
+        <pre class="brush: php;" contenteditable id="yocode">
+        </pre>
+        </iframe>
     <!-- Load JS here for greater good =============================-->
     
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.ui.touch-punch.min.js"></script>
-    <script src="js/bootstrap-select.js"></script>
-    <script src="js/bootstrap-switch.js"></script>
-    <script src="js/flatui-checkbox.js"></script>
-    <script src="js/flatui-radio.js"></script>
-    <script src="js/jquery.tagsinput.js"></script>
-    <script src="js/jquery.placeholder.js"></script>
-    <script src="js/jquery.stacktable.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.ui.touch-punch.min.js"></script>
+    <script src="/static/js/bootstrap-select.js"></script>
+    <script src="/static/js/bootstrap-switch.js"></script>
+    <script src="/static/js/flatui-checkbox.js"></script>
+    <script src="/static/js/flatui-radio.js"></script>
+    <script src="/static/js/jquery.tagsinput.js"></script>
+    <script src="/static/js/jquery.placeholder.js"></script>
+    <script src="/static/js/jquery.stacktable.js"></script>
     <script src="http://vjs.zencdn.net/c/video.js"></script>
-    <script src="js/application.js"></script>
+    <script src="/static/js/application.js"></script>
    <!--  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" /> -->
   
-    <script type="text/javascript" src="js/home.js"></script>
+    <script type="text/javascript" src="/static/js/home.js"></script>
 
 </body>
 </html>

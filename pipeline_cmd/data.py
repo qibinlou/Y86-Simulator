@@ -110,125 +110,10 @@ OF=False
 global CF
 CF=False
 
-def clear():#对所有内部变量清零
-    global Text
-    Text=[]
-    global LineNum
-    LineNum=[]
-    global RealNum
-    RealNum=[]
-    global halt
-    halt=False
-    global end
-    end=False
-    global ret
-    ret=False
-    global stall
-    stall=False
-
-    global total_cycle
-    total_cycle=1
-
-    global valid_cycle
-    valid_cycle=0
-
-    global F_icode
-    F_icode=""
-    global pc
-    pc="00000000"
-    global D_index
-    D_index="X"
-    global D_icode
-    D_icode="0"
-    global D_ifunc
-    D_ifunc=""
-    global rA
-    rA=""
-    global rB
-    rB=""
-    global D_valC
-    D_valC=""
-    global D_valP
-    D_valP=""
-    global E_index
-    E_index="X"
-    global E_icode
-    E_icode="0"
-    global E_ifunc
-    E_ifunc=""
-    global E_valC
-    E_valC=""
-    global E_valA
-    E_valA=""
-    global E_valB
-    E_valB=""
-    global E_dstE
-    E_dstE=""
-    global E_dstM
-    E_dstM=""
-    global M_index
-    M_index="X"
-    global M_icode
-    M_icode="0"
-    global bch
-    bch=""
-    global M_valE
-    M_valE=""
-    global M_valM
-    M_valM=""
-    global M_dstE
-    M_dstE=""
-    global M_dstM
-    M_dstM=""
-    global srcA
-    srcA=""
-    global srcB
-    srcB=""
-    global W_index
-    W_index="X"
-    global W_icode
-    W_icode="0"
-    global W_valE
-    W_valE=""
-    global W_valM
-    W_valM=""
-    global W_dstE
-    W_dstE=""
-    global W_dstM
-    W_dstM=""
-    global ZF
-    ZF=False
-    global SF
-    SF=False
-    global OF
-    OF=False
-    global CF
-    CF=False
-
-    global eax
-    eax="00000000"
-    global ecx
-    ecx="00000000"
-    global edx
-    edx="00000000"
-    global ebx
-    ebx="00000000"
-    global esp
-    esp="00000000"
-    global ebp
-    ebp="00000000"
-    global esi
-    esi="00000000"
-    global edi
-    edi="00000000"
-
-    global Memory
-    Memory={}
-
-def arc(s):#大端法与小端法的转换
+def arc(s):
     return s[6]+s[7]+s[4]+s[5]+s[2]+s[3]+s[0]+s[1]
 
-def get(s):#十六进制和十进制转换
+def get(s):
     if(s[0]=="a"):
         return 10
     elif(s[0]=="b"):
@@ -244,7 +129,7 @@ def get(s):#十六进制和十进制转换
     else:
         return ord(s[0])-ord("0")
 
-def num(s):#取得一个16进制小端法表示数的10进制
+def num(s):
     ans=0
     ss=s[0:2]
     temp=get(ss[0])
@@ -264,13 +149,13 @@ def num(s):#取得一个16进制小端法表示数的10进制
     ans+=temp*256*256*256
     return ans
 
-def intread(temp):#对整数变量的读取提供内部接口
+def intread(temp):
     if(temp=="total_cycle"):
         return total_cycle
     if(temp=="valid_cycle"):
         return valid_cycle
 
-def intwrite(temp,val):#对整数变量的修改提供内部接口
+def intwrite(temp,val):
     if(temp=="total_cycle"):
         global total_cycle
         total_cycle=val
@@ -278,7 +163,7 @@ def intwrite(temp,val):#对整数变量的修改提供内部接口
         global valid_cycle
         valid_cycle=val
 
-def read(temp):#对其他一般的变量读取提供接口
+def read(temp):
     if(temp=="F_icode"):
         return F_icode
     elif(temp=="pc"):
@@ -357,7 +242,7 @@ def read(temp):#对其他一般的变量读取提供接口
         return stall
         
 
-def write(temp,val):#对其他一般的变量修改提供接口
+def write(temp,val):
     if(temp=="F_icode"):
         global F_icode
         F_icode=val
@@ -490,7 +375,7 @@ esi="00000000"
 global edi
 edi="00000000"
 
-def RegWrite(reg,val):#对寄存器的变量修改提供接口
+def RegWrite(reg,val):
     if(reg=="0"):
         global eax
         eax=val
@@ -516,7 +401,7 @@ def RegWrite(reg,val):#对寄存器的变量修改提供接口
         global edi
         edi=val
 
-def RegRead(reg):#对寄存器的变量读取提供接口
+def RegRead(reg):
     if(reg=="0"):
         return eax
     if(reg=="1"):
@@ -535,14 +420,14 @@ def RegRead(reg):#对寄存器的变量读取提供接口
         return edi
 #Memory------------------------------------------------
 global Memory
-Memory={}#内存采用python的字典类型，相当于一个hash表，避免了内存地址过于零散时产生的空间浪费
+Memory={}
 
 
-def MemoryRead(temp):#对32bytes 内存的读取提供接口
+def MemoryRead(temp):
     tmp=num(temp)
     return Memory[str(tmp)]+Memory[str(tmp+1)]+Memory[str(tmp+2)]+Memory[str(tmp+3)]
 
-def MemoryWrite(temp,val):#对32bytes 内存的修改提供接口
+def MemoryWrite(temp,val):
     tmp=num(temp)
     global Memory
     Memory[str(tmp)]=val[0:2]
@@ -550,7 +435,7 @@ def MemoryWrite(temp,val):#对32bytes 内存的修改提供接口
     Memory[str(tmp+2)]=val[4:6]
     Memory[str(tmp+3)]=val[6:8]
 
-def MemoryCopy(temp,val):#对任意长度的字符串提供写入内存的接口
+def MemoryCopy(temp,val):
     tmp=num(arc(temp))
     global Memory
     i=0
@@ -558,7 +443,7 @@ def MemoryCopy(temp,val):#对任意长度的字符串提供写入内存的接口
         Memory[str(tmp+i/2)]=val[i]+val[i+1]
         #print(str(tmp+i/2))
         i+=2
-def MemoryGet(temp,six=False):#对从内存中读取指令的任务提供接口
+def MemoryGet(temp,six=False):
     tmp=num(arc(temp))
     global Memory
     if not(str(tmp) in Memory):
@@ -577,7 +462,7 @@ def MemoryGet(temp,six=False):#对从内存中读取指令的任务提供接口
     else:
         return ""
 #alu-------------------------------------------------------
-def GetBin(k):#将一个小端法表示的十六进制数转换成32位二进制
+def GetBin(k):
     global a
     a=[]
     s=k[0:2]
@@ -597,7 +482,7 @@ def GetBin(k):#将一个小端法表示的十六进制数转换成32位二进制
         temp=temp/2
     return a
 
-def change(arr):#把32位二进制补码转变为整数
+def change(arr):
     i=0
     ans=0
     while(i<31):
@@ -607,7 +492,7 @@ def change(arr):#把32位二进制补码转变为整数
          ans=-ans
     return ans
 
-def change0x(k1,k2,k3,k4):#四位二进制转换为一位十六进制
+def change0x(k1,k2,k3,k4):
     k=k1*8+k2*4+k3*2+k4
     if(k==15):
         return "f"
@@ -642,7 +527,7 @@ def change0x(k1,k2,k3,k4):#四位二进制转换为一位十六进制
     elif(k==0):
         return "0"
 
-def alu(op,alua,alub,setCC=True):#alu运算单元，setCC为真时改写条件码，setCC为假时不修改条件码
+def alu(op,alua,alub,setCC=True):
     global CF
     global ZF
     global SF
@@ -652,18 +537,18 @@ def alu(op,alua,alub,setCC=True):#alu运算单元，setCC为真时改写条件�
         ZF=False
         SF=False
         OF=False
-    temp=GetBin(alua)#aluA转换为二进制
+    temp=GetBin(alua)
     global bina
     bina=temp[:]
-    temp=GetBin(alub)#aluB转换为二进制
+    temp=GetBin(alub)
     global binb
     binb=temp[:]
-    temp=GetBin("00000000")#将结果清零
+    temp=GetBin("00000000")
     global binc
     binc=temp[:]
-    binc.append(0)#结果延伸一位判断是否产生无符号溢出
+    binc.append(0)    
     
-    if(op=="1"):#若是减法，需要对aluB转换补码
+    if(op=="1"):
         for i in range(0,32):
             bina[i]=bina[i] ^ 1
         bina[0]+=1
@@ -676,7 +561,7 @@ def alu(op,alua,alub,setCC=True):#alu运算单元，setCC为真时改写条件�
             bina[31]=bina[31]%2    
 
     i=0;
-    while(i<32):#计算
+    while(i<32):
         binc[i]+=bina[i]+binb[i]
         if(binc[i]>=2):
             binc[i+1]+=binc[i]/2
@@ -686,13 +571,13 @@ def alu(op,alua,alub,setCC=True):#alu运算单元，setCC为真时改写条件�
     if setCC and (binc[32]!=0):
         CF=True
 
-    if(op=="2"):#如果是andl，另外处理
+    if(op=="2"):
         for i in range(0,32):
             binc[i]=bina[i] & binb[i]
         if setCC:
             CF=False
     
-    if(op=="3"):#如果是xorl，另外处理
+    if(op=="3"):
         for i in range(0,32):
             binc[i]=bina[i] ^ binb[i]
         if setCC:
@@ -719,10 +604,10 @@ def alu(op,alua,alub,setCC=True):#alu运算单元，setCC为真时改写条件�
     s6=change0x(binc[31],binc[30],binc[29],binc[28])
     s7=change0x(binc[27],binc[26],binc[25],binc[24])
     
-    s=s0+s1+s2+s3+s4+s5+s6+s7#组成小端法表示的数，并且返回
+    s=s0+s1+s2+s3+s4+s5+s6+s7
     return s
     
-def check(func):#根据条件码，判断jXX的跳转是否合法
+def check(func):
     if(func=="0"):#jmp
         return True
     elif(func=="1"):#jle
@@ -740,7 +625,7 @@ def check(func):#根据条件码，判断jXX的跳转是否合法
     else:
         return False
 #---------------------------------------------------------------------------------------------------------------------
-def next(pc):#通过外部调用alu，计算下一条指令的起始位置
+def next(pc):
     if(pc=="X"):
         return "X"
     s=MemoryGet(pc)
@@ -775,7 +660,7 @@ def next(pc):#通过外部调用alu，计算下一条指令的起始位置
     else:
         return "X"
 
-def show():#显示函数
+def show():
     print ("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX[State]XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 #F---------------------------------------
     s=read("pc")

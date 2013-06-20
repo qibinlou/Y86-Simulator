@@ -139,11 +139,13 @@ def executeY86(Reg,Mem,Wrd=[""]):
         try:
             setY86(Reg,Mem)
         except:
-            raise Y86err("The Register or Memory you set is not fitable!")
+            pass
+            # raise Y86err("The Register or Memory you set is not fitable!")
         try:
             exeY86()
         except:
-            raise Y86err("Logical Error!!!")
+            pass
+            # raise Y86err("Logical Error!!!")
         try:
             _reg,_mem = getY86()
             for i in range(0,2048):
@@ -155,24 +157,28 @@ def executeY86(Reg,Mem,Wrd=[""]):
                     _reg[s]=Reg[s]
             return _reg,_mem
         except:
-            raise Y86err("The Inner Information is Error!")
+            pass
+            # raise Y86err("The Inner Information is Error!")
     else:
         try:
             initY86(Wrd)
         except:
-            raise Y86err("The YO File Information You Post is not fitable!")
+            pass
+            # raise Y86err("The YO File Information You Post is not fitable!")
         try:
             exeY86()
         except:
-            raise Y86err("Logical Error!!!")
+            pass
+            # raise Y86err("Logical Error!!!")
         try:
             _reg,_mem = getY86()
             for i in range(0,len(data.RealNum)):
                 _reg[data.LineNum[i]]=data.RealNum[i]
-                print(data.LineNum[i])
+                # print(data.LineNum[i])
             return _reg,_mem
         except:
-            raise Y86err("The Inner Information is Error!")
+            pass
+            # raise Y86err("The Inner Information is Error!")
     
 
 
